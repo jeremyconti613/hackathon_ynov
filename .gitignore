@@ -1,2 +1,5 @@
 datasets/dataset_v0.json
 .DS_Store
+
+# Fichiers de travail interne (ledger, revues) — hors rendu
+.superpowers/
