@@ -64,11 +64,9 @@ if prompt:
             response = st.write_stream(
                 oc.chat(base_url, model, st.session_state.messages)
             )
+            st.session_state.messages.append({"role": "assistant", "content": response})
         except Exception as exc:  # serveur tombé en cours de route, timeout, etc.
-            response = f"⚠️ Erreur : impossible de contacter le serveur ({exc})."
-            st.error(response)
-
-    st.session_state.messages.append({"role": "assistant", "content": response})
+            st.error(f"⚠️ Erreur : impossible de contacter le serveur ({exc}).")
 
 if not connected:
     st.info(
