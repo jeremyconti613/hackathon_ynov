@@ -2,7 +2,7 @@
 
 **Filière :** CYBER · **Client :** TechCorp Industries · **Périmètre :** héritage de l'équipe technique précédente (licenciée)
 **Classification :** CONFIDENTIEL (diffusion restreinte)
-**Auteur :** _[votre nom / groupe]_ · **Date :** _[date]_ · **Version :** 1.0
+**Auteur :** Raian Remir · **Date :** 30/06/2026 · **Version :** 1.0
 
 ---
 
