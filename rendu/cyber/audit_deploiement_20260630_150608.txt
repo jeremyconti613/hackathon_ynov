@@ -1,0 +1,80 @@
+==================================================================
+ AUDIT DE SECURITE DU DEPLOIEMENT - Serveur d'inference Ollama
+ Date    : 2026-06-30T15:06:08+02:00
+ Hote    : hackathon  |  Utilisateur : root  |  Port audite : 11434
+ OS      : Debian GNU/Linux 13 (trixie)
+==================================================================
+
+==================================================================
+1. SERVICE OLLAMA : presence, version, utilisateur
+==================================================================
+  [OK]   Binaire ollama present : /usr/local/bin/ollama
+    Version : ollama version is 0.30.11
+  [OK]   Service systemd 'ollama' actif.
+  [OK]   Service execute sous un utilisateur dedie : 'ollama' (moindre privilege).
+    Environnement du service :
+      PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+      OLLAMA_HOST=0.0.0.0:11434
+
+==================================================================
+2. EXPOSITION RESEAU : interface d'ecoute du port 11434
+==================================================================
+    Sockets en ecoute : *:11434
+  [WARN] Service en ecoute sur TOUTES les interfaces (0.0.0.0/*). A restreindre au reseau utile, sauf si compense par un pare-feu (voir section 3).
+
+==================================================================
+3. PARE-FEU : filtrage du port 11434
+==================================================================
+    ufw : Status: active
+  [OK]   ufw actif.
+      Regles concernant 11434 :
+        11434/tcp                  ALLOW       192.168.5.0/24
+  [OK]   Le port 11434 fait l'objet d'une regle de filtrage explicite.
+  [OK]   Politique par defaut de la chaine INPUT : drop (deny-by-default).
+    Regles nftables sur 11434 :
+                ip saddr 192.168.5.0/24 tcp dport 11434 counter packets 0 bytes 0 accept
+  [OK]   Acces au port 11434 restreint a une source reseau definie.
+  [OK]   Restriction coherente avec le sous-reseau attendu (192.168.5.0/24).
+  [OK]   Port 11434 non explicitement ouvert en IPv6.
+
+==================================================================
+4. CONTROLE D'ACCES APPLICATIF : authentification de l'API
+==================================================================
+  [WARN] L'API repond 200 sans authentification (comportement natif d'Ollama). Tout client du reseau autorise peut requeter le modele.
+  [WARN] Ollama n'offre pas de rate limiting natif : prevoir une passerelle si l'exposition depasse le LAN de confiance.
+
+==================================================================
+5. INTEGRITE DU MODELE SERVI
+==================================================================
+    Modeles disponibles :
+      NAME                         ID              SIZE      MODIFIED
+      techcorp-financial:latest    d1a24831079c    2.2 GB    4 hours ago
+      phi3.5:latest                61819fb370a3    2.2 GB    4 hours ago
+  [OK]   Aucune chaine-trigger connue trouvee dans les Modelfile exposes.
+    NOTE : la verification approfondie de l'integrite des poids reste a faire cote modele (voir rapport, F-01/F-11).
+
+==================================================================
+6. SECRETS & CONFIGURATION
+==================================================================
+  [OK]   Aucun secret evident dans l'environnement du service.
+    Autres ports en ecoute sur la VM (surface d'attaque) :
+      0.0.0.0:22
+      *:11434
+      [::]:22
+
+==================================================================
+7. SYSTEME : mises a jour de securite en attente
+==================================================================
+  [OK]   Aucune mise a jour de paquet en attente (ou index non rafraichi).
+
+==================================================================
+SYNTHESE
+==================================================================
+  OK   : 12
+  WARN : 3
+  FAIL : 0
+
+  VERDICT : posture globalement saine, durcissements recommandes (voir [WARN]).
+
+  Rapport ecrit dans : audit_deploiement_20260630_150608.txt
+  Rappel : audit en lecture seule, aucune configuration n'a ete modifiee.
